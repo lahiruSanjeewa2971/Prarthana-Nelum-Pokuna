@@ -7,20 +7,47 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Hotel {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  address     String?
+  phone       String?
+  email       String?
+  map_link    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model FunctionType {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  slug      String?  @unique
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  bookings Booking[]
+}
+
 model Booking {
-  id              String        @id @default(uuid())
-  customerName    String
-  customerEmail   String
-  customerPhone   String
-  functionType    String
-  eventDate       DateTime
-  startTime       String
-  endTime         String
-  additionalNotes String?
-  status          BookingStatus @default(PENDING)
-  adminNote       String?
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  id                 String        @id @default(uuid())
+  customerName       String
+  customerEmail      String
+  customerPhone      String
+  functionTypeLegacy String?
+  functionTypeId     String?
+  functionType       FunctionType? @relation(fields: [functionTypeId], references: [id], onDelete: SetNull)
+  functionTypeCustom String?
+  functionTypeLabel  String?
+  eventDate          DateTime
+  startTime          String
+  endTime            String
+  additionalNotes    String?
+  status             BookingStatus @default(PENDING)
+  adminNote          String?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
 }
 
 model Admin {
