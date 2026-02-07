@@ -75,7 +75,7 @@ Comprehensive, trackable project task breakdown aligned with the proposed archit
 ## Database (Prisma/PostgreSQL)
 - [x] Local PostgreSQL install
 - [x] Prisma models and migrations applied (Booking, Admin, Hotel)
-- [ ] Optional: seed script to create initial `Admin` + `Hotel` row
+- [x] Optional: seed script to create initial `Admin` + `Hotel` row
 - [ ] Indexes/tuning (later): event_date, status for queries
 
 ## Authentication & Authorization
