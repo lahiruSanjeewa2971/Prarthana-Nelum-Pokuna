@@ -14,16 +14,21 @@
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
+    "@sentry/nextjs": "^10.38.0",
     "bcrypt": "^6.0.0",
     "next": "16.1.6",
+    "nodemailer": "^8.0.1",
     "prisma": "^5.22.0",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "winston": "^3.19.0",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/bcrypt": "^6.0.0",
     "@types/node": "^20",
+    "@types/nodemailer": "^7.0.9",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "dotenv": "^17.2.3",
