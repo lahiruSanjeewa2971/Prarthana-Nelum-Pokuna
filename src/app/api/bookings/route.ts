@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server';
 import { createBooking } from '@/services/booking.service';
+import { sendAdminBookingNotification } from '@/services/email.service';
 import { createBookingSchema } from '@/utils/validators';
 import { createdResponse } from '@/lib/response-builder';
 import { handleApiError } from '@/lib/error-handler';
@@ -38,6 +39,11 @@ export async function POST(request: NextRequest) {
 
     // Create booking via service
     const booking = await createBooking(bookingData);
+
+    // Send admin notification email (async, don't block response)
+    sendAdminBookingNotification(booking).catch((error) => {
+      logger.error('Failed to send admin notification email', error);
+    });
 
     // Return success response
     return createdResponse({
