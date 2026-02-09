@@ -8,8 +8,10 @@ import {
   validateWorkingHours,
 } from "@/utils/business-rules";
 import { ERROR_MESSAGES } from "@/lib/contants";
-import { ConflictError, ValidationError } from "@/domain/errors";
+import { ConflictError, ValidationError, NotFoundError } from "@/domain/errors";
 import * as bookingRepository from "@/repositories/booking.repository";
+import * as emailService from "@/services/email.service";
+import { BookingWithRelations } from "@/repositories/booking.repository";
 
 export async function getConflictingBookings(
   date: Date,
@@ -87,4 +89,101 @@ export async function createBooking(data: CreateBookingDTO): Promise<Booking> {
 
   logger.info("Booking created successfully", { bookingId: booking.id });
   return booking;
+}
+
+/**
+ * List bookings with filters and pagination
+ */
+export async function listBookings(params: {
+  status?: BookingStatus;
+  eventDateGte?: Date;
+  eventDateLte?: Date;
+  customerEmail?: string;
+  functionTypeId?: string;
+  page?: number;
+  limit?: number;
+}): Promise<{ bookings: BookingWithRelations[]; total: number; page: number; limit: number }> {
+  const page = params.page || 1;
+  const limit = params.limit || 20;
+  const skip = (page - 1) * limit;
+
+  const filters = {
+    status: params.status,
+    eventDateGte: params.eventDateGte,
+    eventDateLte: params.eventDateLte,
+    customerEmail: params.customerEmail,
+    functionTypeId: params.functionTypeId,
+  };
+
+  logger.info("Listing bookings", { filters, page, limit });
+
+  const [bookings, total] = await Promise.all([
+    bookingRepository.findBookings(filters, skip, limit),
+    bookingRepository.countBookings(filters),
+  ]);
+
+  return { bookings, total, page, limit };
+}
+
+/**
+ * Get single booking by ID
+ */
+export async function getBookingById(id: string): Promise<BookingWithRelations> {
+  logger.info("Getting booking", { bookingId: id });
+
+  const booking = await bookingRepository.findBookingById(id);
+
+  if (!booking) {
+    throw new NotFoundError(`Booking with ID ${id} not found`);
+  }
+
+  return booking;
+}
+
+/**
+ * Update booking status (admin only)
+ */
+export async function updateBookingStatus(
+  id: string,
+  status: BookingStatus,
+  adminNote?: string
+): Promise<BookingWithRelations> {
+  logger.info("Updating booking status", { bookingId: id, status, adminNote });
+
+  // Validate status
+  if (!["ACCEPTED", "REJECTED", "PENDING"].includes(status)) {
+    throw new ValidationError("Invalid booking status");
+  }
+
+  // Get existing booking
+  const existingBooking = await bookingRepository.findBookingById(id);
+
+  if (!existingBooking) {
+    throw new NotFoundError(`Booking with ID ${id} not found`);
+  }
+
+  // Update booking
+  const updatedBooking = await bookingRepository.updateBooking(id, {
+    status,
+    adminNote,
+  });
+
+  logger.info("Booking status updated", { bookingId: id, newStatus: status });
+
+  // Send email notification to customer (async, don't block response)
+  if (status === "ACCEPTED") {
+    emailService
+      .sendCustomerAcceptanceEmail(updatedBooking)
+      .catch((error) => {
+        logger.error("Failed to send acceptance email", { bookingId: id, error });
+      });
+  } else if (status === "REJECTED") {
+    emailService
+      .sendCustomerRejectionEmail(updatedBooking)
+      .catch((error) => {
+        logger.error("Failed to send rejection email", { bookingId: id, error });
+      });
+  }
+
+  return updatedBooking;
 }

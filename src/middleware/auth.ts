@@ -7,8 +7,10 @@ export interface AuthenticatedRequest extends NextRequest {
   admin?: DecodedToken;
 }
 
-export function requireAuth(handler: (req: AuthenticatedRequest) => Promise<NextResponse>) {
-  return async (request: NextRequest): Promise<NextResponse> => {
+export function requireAuth(
+  handler: (req: AuthenticatedRequest, context?: any) => Promise<NextResponse>
+) {
+  return async (request: NextRequest, context?: any): Promise<NextResponse> => {
     try {
       // Get token from cookie
       const token = request.cookies.get('auth-token')?.value;
@@ -30,8 +32,8 @@ export function requireAuth(handler: (req: AuthenticatedRequest) => Promise<Next
       const authenticatedRequest = request as AuthenticatedRequest;
       authenticatedRequest.admin = decoded;
 
-      // Call the actual handler
-      return handler(authenticatedRequest);
+      // Call the actual handler with context (for dynamic routes)
+      return handler(authenticatedRequest, context);
     } catch (error) {
       logger.error('Auth middleware error', error);
       return errorResponse('INTERNAL_ERROR', 'Authentication error', 500);
