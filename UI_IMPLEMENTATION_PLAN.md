@@ -1,7 +1,7 @@
 # Prarthana Nelum Pokuna - UI Implementation Plan
 
 ## Project Overview
-Full-stack booking system with unified authentication for both customers and admin. Single login system that automatically routes users based on email (admin vs customer).
+Full-stack hotel booking system for Prarthana Nelum Pokuna Hotel. Customers can book without login (public booking form) or optionally create accounts to track their bookings. Admin authentication required for booking management. Single login system that automatically routes users based on email (admin vs customer).
 
 ## Tech Stack
 - **Framework**: Next.js 16 (App Router)
@@ -29,28 +29,32 @@ src/
 ├── app/                          # Next.js App Router
 │   ├── (auth)/                   # Auth route group (no layout)
 │   │   ├── login/
-│   │   │   └── page.tsx         # Login page
+│   │   │   └── page.tsx         # Login page (admin + optional customer)
 │   │   ├── register/
-│   │   │   └── page.tsx         # Registration page
+│   │   │   └── page.tsx         # Customer registration (optional)
 │   │   └── forgot-password/
 │   │       └── page.tsx         # Forgot password page
 │   │
-│   ├── (public)/                # Public routes (minimal layout)
+│   ├── (public)/                # Public routes (no auth required)
 │   │   ├── layout.tsx           # Public layout wrapper
-│   │   └── page.tsx             # Landing/home page
+│   │   ├── page.tsx             # Landing/home page
+│   │   ├── booking/
+│   │   │   └── page.tsx         # Public booking form (NO LOGIN REQUIRED)
+│   │   ├── about/
+│   │   │   └── page.tsx         # About page
+│   │   └── gallery/
+│   │       └── page.tsx         # Gallery page
 │   │
-│   ├── customer/                # Customer protected routes
+│   ├── customer/                # Customer protected routes (OPTIONAL - for logged-in customers)
 │   │   ├── layout.tsx           # Customer layout with nav
 │   │   ├── dashboard/
-│   │   │   └── page.tsx
+│   │   │   └── page.tsx         # Customer dashboard
 │   │   ├── bookings/
-│   │   │   ├── page.tsx         # My bookings list
-│   │   │   ├── new/
-│   │   │   │   └── page.tsx     # Create booking
+│   │   │   ├── page.tsx         # My bookings list (requires login)
 │   │   │   └── [id]/
 │   │   │       └── page.tsx     # Booking details
 │   │   └── profile/
-│   │       └── page.tsx
+│   │       └── page.tsx         # Profile management
 │   │
 │   ├── admin/                   # Admin protected routes
 │   │   ├── layout.tsx           # Admin layout with sidebar
@@ -599,23 +603,34 @@ export default function AdminBookingsPage() {
 
 ## Authentication Strategy
 
-### Single Login System
-- **Login Form**: One form for both admin and customers
-- **Email Detection**: Check if email matches admin email
-  - Admin email: `rathne1997@gmail.com`
-  - All others: Customers
-- **Registration**: Only for customers (admin pre-exists)
-- **Password Requirements**:
-  - Minimum 8 characters
-  - At least 1 uppercase, 1 lowercase, 1 number, 1 special character
-  - Enforced client-side and server-side
+### Login System
+- **Admin**: Required - Email-based validation (rathne1997@gmail.com)
+- **Customer**: Optional - Can book without account OR register/login to track bookings
+- **Public Booking**: No authentication required for placing bookings
+- **Customer Accounts**: Optional feature for booking history and profile management
 
-### User Flow
+### Login Form
+- One unified login form for both admin and customers
+- Email detection: Check if email matches admin email
+  - Admin email: `rathne1997@gmail.com` → Admin Dashboard
+  - All others: Customers → Customer Dashboard
+- **Registration**: Only for customers who want to track bookings (admin pre-exists)
+
+### Password Requirements
+- Minimum 8 characters
+- At least 1 uppercase, 1 lowercase, 1 number, 1 special character
+- Enforced client-side and server-side
+
+### User Flow Options
 ```
-Landing Page → Login/Register → Email Check → Route to Dashboard
-                                    ↓
-                    Admin Email → Admin Dashboard
-                    Other Email → Customer Dashboard
+Option 1 (Public Booking - No Account):
+Landing Page → Public Booking Form → Submit → Confirmation Email
+
+Option 2 (Customer with Account):
+Landing Page → Login/Register → Customer Dashboard → My Bookings
+
+Option 3 (Admin):
+Landing Page → Login → Admin Dashboard → Manage Bookings
 ```
 
 ---
@@ -1005,13 +1020,36 @@ function BookingForm() {
 - [ ] **Wrap app with providers** (AuthProvider → QueryClientProvider)
 
 ### 1.5 Authentication UI (Using shadcn components)
-- [ ] **Landing/Home Page** (`app/page.tsx`)
+- [ ] **Landing/Home Page** (`app/(public)/page.tsx`)
   - Hero section with hotel image
   - Brief description
   - CTA buttons (shadcn Button)
+    - "Book Now" → Public booking form (no login)
+    - "My Bookings" → Login (for customers with accounts)
+    - "Admin Login" → Admin login
   - Available function types preview (shadcn Card)
   - Contact information
   - Fully responsive mobile layout
+
+- [ ] **Public Booking Page** (`app/(public)/booking/page.tsx`)
+  - **NO LOGIN REQUIRED**
+  - Booking form component (`components/booking/public-booking-form.tsx`)
+  - Customer information fields:
+    - Full name (shadcn Input)
+    - Email (shadcn Input)
+    - Phone number (shadcn Input)
+  - Event details:
+    - Function type selection (dropdown with active types)
+    - Event date picker (disable past dates)
+    - Start time selector
+    - End time selector
+    - Additional notes textarea
+  - Form validation with React Hook Form + Zod
+  - Submit creates booking with status PENDING
+  - Success message with booking reference
+  - Email sent to customer (confirmation) and admin (notification)
+  - Option to "Create account to track this booking"
+  - Mobile-optimized layout
 
 - [ ] **Login Page** (`app/(auth)/login/page.tsx`)
   - Login form component (`components/auth/login-form.tsx`)
@@ -1021,11 +1059,12 @@ function BookingForm() {
   - Form validation with React Hook Form + Zod
   - Error messages (shadcn Alert)
   - "Forgot password?" link
-  - "Don't have an account? Register" link
+  - "Don't have an account? Register" link (for customers)
   - Submit button (shadcn Button with loading state)
+  - Auto-route: Admin → /admin/dashboard, Customer → /customer/dashboard
   - Mobile-optimized layout
 
-- [ ] **Registration Page** (`app/(auth)/register/page.tsx`)
+- [ ] **Registration Page** (`app/(auth)/register/page.tsx`) - **OPTIONAL for customers**
   - Registration form component (`components/auth/register-form.tsx`)
   - Full name input (shadcn Input)
   - Email input with validation
@@ -1038,6 +1077,7 @@ function BookingForm() {
   - Success toast (shadcn Toast)
   - "Already have an account? Login" link
   - Auto-redirect to customer dashboard after success
+  - Note: "Create account to track your bookings"
 
 - [ ] **Forgot Password Page** (`app/(auth)/forgot-password/page.tsx`)
   - Email input (shadcn Input)
@@ -1046,41 +1086,71 @@ function BookingForm() {
   - Back to login link
 
 ### 1.6 API Integration (Auth)
-- [ ] **Create Customer Model** in Prisma schema
+- [ ] **Create Customer Model** in Prisma schema (OPTIONAL - for customers who register)
   - id, name, email, password, phone, createdAt, updatedAt
-  - Relation to Booking model
+  - Relation to Booking model (nullable customerId in Booking)
 - [ ] Run Prisma migration
+- [ ] **Update Booking Model** to support both:
+  - customerId (nullable - for registered customers)
+  - customerName, customerEmail, customerPhone (for public bookings)
 - [ ] **Create customer repository** (`src/repositories/customer.repository.ts`)
   - findCustomerByEmail, createCustomer, updateCustomer
 - [ ] **Create customer service** (`src/services/customer.service.ts`)
   - register, updateProfile, changePassword
 - [ ] **Create auth API endpoints**
-  - POST `/api/auth/register` (customer registration)
+  - POST `/api/auth/register` (optional customer registration)
   - POST `/api/auth/login` (unified login - admin or customer)
   - POST `/api/auth/logout`
   - GET `/api/auth/me` (get current user)
+- [ ] **Create public booking API**
+  - POST `/api/bookings` (public - NO AUTH REQUIRED)
+    - Accept: customerName, customerEmail, customerPhone, functionType, date, time, notes
+    - Create booking with status PENDING
+    - Send emails (customer confirmation + admin notification)
+    - Return booking reference
+- [ ] **Update booking service** to handle:
+  - Public bookings (no customerId)
+  - Authenticated customer bookings (with customerId)
 - [ ] **Update auth service** to handle both admin and customer login
 - [ ] **Create API hooks**
   - `useAuth` hook with login, register, logout mutations
+  - `usePublicBooking` hook for public booking form
 - [ ] Implement error handling in auth flows
-- [ ] Test complete auth flow (register → login → protected route)
+- [ ] Test complete flows:
+  - Public booking (no login)
+  - Customer registration → login → view bookings
+  - Admin login → manage bookings
 
 ---
 
 ## Phase 2: Customer UI (Week 2-3)
 
-### 2.1 Customer Layout
+### 2.1 Public Pages (No Authentication Required)
+- [ ] **About Page** (`/about`)
+  - Hotel history and information
+  - Mission/vision
+  - Image gallery
+  - Contact details
+  - Mobile-responsive layout
+
+- [ ] **Gallery Page** (`/gallery`)
+  - Photo grid of hotel and events
+  - Lightbox for image viewing
+  - Categories/filters (optional)
+  - Mobile-optimized grid
+
+### 2.2 Customer Layout (For Logged-In Customers Only)
 - [ ] **Customer Layout Component** (`/customer/layout`)
   - Top navigation bar
     - Logo
-    - Navigation links (Home, My Bookings, New Booking, Profile)
+    - Navigation links (Dashboard, My Bookings, New Booking, Profile)
     - User menu dropdown (Profile, Logout)
     - Mobile: Hamburger menu
   - Responsive mobile drawer/sidebar
   - Footer with contact info
   - Breadcrumb navigation
 
-### 2.2 Customer Dashboard
+### 2.3 Customer Dashboard (Requires Login)
 - [ ] **Dashboard Page** (`/customer/dashboard`)
   - Welcome message with user name
   - Quick stats cards
@@ -1094,7 +1164,7 @@ function BookingForm() {
     - View all bookings
   - Mobile: Stacked cards layout
 
-### 2.3 Booking Management (Customer View)
+### 2.4 My Bookings (Requires Login)
 - [ ] **My Bookings Page** (`/customer/bookings`)
   - Bookings list with filters
     - Status filter (All, Pending, Accepted, Rejected)
@@ -1110,7 +1180,7 @@ function BookingForm() {
   - Pagination
   - Mobile: Vertical card stack
 
-- [ ] **Booking Details Modal/Page** (`/customer/bookings/[id]`)
+- [ ] **Booking Details Page** (`/customer/bookings/[id]`)
   - Full booking information
   - Status with visual indicator
   - Timeline/history (created, updated, status changes)
@@ -1119,36 +1189,7 @@ function BookingForm() {
   - Cancel request option (if pending)
   - Mobile-optimized detail view
 
-### 2.4 New Booking Flow
-- [ ] **New Booking Page** (`/customer/bookings/new`)
-  - **Step 1: Event Details**
-    - Function type selection (dropdown with active types)
-    - Custom function type input (if "Other" selected)
-    - Event date picker (disable past dates)
-    - Start time selector
-    - End time selector
-    - Real-time conflict check indicator
-    - Working hours validation message
-  
-  - **Step 2: Contact Information** (Pre-filled from profile)
-    - Customer name (editable)
-    - Email (editable)
-    - Phone number (editable)
-    - Additional notes textarea
-  
-  - **Step 3: Review & Submit**
-    - Summary of all details
-    - Terms & conditions
-    - Submit button
-    - Edit buttons for each section
-  
-  - Progress indicator (Step 1 of 3)
-  - Form validation (real-time)
-  - Error messages
-  - Success confirmation
-  - Mobile: Full-width form fields
-
-### 2.5 Customer Profile
+### 2.5 Customer Profile (Requires Login)
 - [ ] **Profile Page** (`/customer/profile`)
   - View/edit personal information
     - Name
@@ -1529,15 +1570,23 @@ colors: {
 
 ### Overall Progress by Phase
 - [ ] Phase 1: Foundation & Authentication (0/21 tasks)
-- [ ] Phase 2: Customer UI (0/15 tasks)
+- [ ] Phase 2: Public & Customer UI (0/18 tasks)
 - [ ] Phase 3: Admin UI (0/24 tasks)
 - [ ] Phase 4: Shared Components (0/17 tasks)
 - [ ] Phase 5: Mobile Optimization (0/12 tasks)
 - [ ] Phase 6: Polish & Launch (0/10 tasks)
 
-**Total Tasks**: 99
+**Total Tasks**: 102
 **Estimated Timeline**: 8 weeks
 **Priority**: P0 (Critical) → Phase 1, 2, 3 | P1 (Important) → Phase 4, 5 | P2 (Nice-to-have) → Phase 6
+
+**Key Features**:
+- ✅ Public booking (no login required)
+- ✅ Optional customer accounts (track bookings)
+- ✅ Admin authentication & dashboard
+- ✅ Email notifications (customer + admin)
+- ✅ Function type management
+- ✅ Hotel content management
 
 ---
 
@@ -1569,9 +1618,10 @@ colors: {
 ## Success Criteria
 
 ### User Experience
-- [ ] Users can register and login in < 30 seconds
-- [ ] Users can create a booking in < 2 minutes
-- [ ] Admin can review and approve booking in < 1 minute
+- [ ] **Public users** can book without account in < 2 minutes
+- [ ] **Customers** can register/login in < 30 seconds (optional)
+- [ ] **Logged-in customers** can view booking history easily
+- [ ] **Admin** can review and approve booking in < 1 minute
 - [ ] 100% mobile responsive (all features work on mobile)
 - [ ] No horizontal scrolling on any device
 - [ ] All touch targets > 44x44px
