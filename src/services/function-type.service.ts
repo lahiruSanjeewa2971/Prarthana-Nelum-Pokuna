@@ -31,6 +31,7 @@ export async function getFunctionTypeById(id: string): Promise<FunctionType> {
  */
 export async function createFunctionType(data: {
   name: string;
+  price: number;
   slug?: string;
   isActive?: boolean;
 }): Promise<FunctionType> {
@@ -60,6 +61,7 @@ export async function createFunctionType(data: {
 
   const functionType = await functionTypeRepository.createFunctionType({
     name: data.name,
+    price: data.price,
     slug,
     isActive: data.isActive,
   });

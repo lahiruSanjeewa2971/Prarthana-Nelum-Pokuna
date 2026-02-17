@@ -48,25 +48,25 @@ async function main() {
 
   // Seed Function Types
   const functionTypes = [
-    { name: 'Wedding', slug: 'wedding' },
-    { name: 'Party', slug: 'party' },
-    { name: 'Family Function', slug: 'family-function' },
-    { name: 'Birthday Party', slug: 'birthday-party' },
-    { name: 'Anniversary Celebration', slug: 'anniversary' },
-    { name: 'Corporate Event', slug: 'corporate-event' },
-    { name: 'Religious Ceremony', slug: 'religious-ceremony' },
-    { name: 'Engagement', slug: 'engagement' },
-    { name: 'Reception', slug: 'reception' },
-    { name: 'Conference', slug: 'conference' },
-    { name: 'Workshop', slug: 'workshop' },
-    { name: 'Cultural Event', slug: 'cultural-event' },
+    { name: 'Wedding', slug: 'wedding', price: 150000, description: 'Complete wedding ceremony venue with full amenities' },
+    { name: 'Party', slug: 'party', price: 75000, description: 'Perfect venue for social gatherings and celebrations' },
+    { name: 'Family Function', slug: 'family-function', price: 60000, description: 'Intimate setting for family gatherings' },
+    { name: 'Birthday Party', slug: 'birthday-party', price: 50000, description: 'Fun and vibrant space for birthday celebrations' },
+    { name: 'Anniversary Celebration', slug: 'anniversary', price: 65000, description: 'Elegant setting for anniversary celebrations' },
+    { name: 'Corporate Event', slug: 'corporate-event', price: 100000, description: 'Professional venue for corporate gatherings' },
+    { name: 'Religious Ceremony', slug: 'religious-ceremony', price: 55000, description: 'Peaceful environment for religious events' },
+    { name: 'Engagement', slug: 'engagement', price: 85000, description: 'Romantic setting for engagement ceremonies' },
+    { name: 'Reception', slug: 'reception', price: 120000, description: 'Grand reception hall with premium facilities' },
+    { name: 'Conference', slug: 'conference', price: 90000, description: 'Modern conference facilities with AV equipment' },
+    { name: 'Workshop', slug: 'workshop', price: 70000, description: 'Interactive space for workshops and training' },
+    { name: 'Cultural Event', slug: 'cultural-event', price: 80000, description: 'Versatile venue for cultural programs' },
   ];
 
   console.log('📋 Seeding function types...');
   for (const ft of functionTypes) {
     await prisma.functionType.upsert({
       where: { name: ft.name },
-      update: { slug: ft.slug },
+      update: { slug: ft.slug, price: ft.price, description: ft.description },
       create: ft,
     });
   }

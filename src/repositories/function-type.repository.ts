@@ -7,13 +7,17 @@ import { FunctionType, BookingStatus } from '@prisma/client';
 
 export interface CreateFunctionTypeData {
   name: string;
+  price: number;
   slug?: string;
+  description?: string;
   isActive?: boolean;
 }
 
 export interface UpdateFunctionTypeData {
   name?: string;
+  price?: number;
   slug?: string;
+  description?: string;
   isActive?: boolean;
 }
 
@@ -61,7 +65,9 @@ export async function createFunctionType(data: CreateFunctionTypeData): Promise<
   return prisma.functionType.create({
     data: {
       name: data.name,
+      price: data.price,
       slug: data.slug || data.name.toLowerCase().replace(/\s+/g, '-'),
+      description: data.description,
       isActive: data.isActive !== undefined ? data.isActive : true,
     },
   });
