@@ -53,17 +53,50 @@ export async function getFunctionTypeById(id: string): Promise<FunctionType | nu
     logger.info('Fetching function type by ID (server-side)', { id });
     const functionType = await functionTypeService.getFunctionTypeById(id);
     
-    if (!functionType) {
-      return null;
-    }
+    if (!functionType) return null;
     
-    // Serialize Decimal to number for Client Components
     return {
       ...functionType,
       price: functionType.price.toNumber(),
     };
   } catch (error) {
-    logger.error('Failed to fetch function type by ID', { id, error });
+    logger.error('Failed to fetch function type', error);
     return null;
+  }
+}
+
+/**
+ * Fetch hotel information
+ * 
+ * @returns Hotel information or null if not found
+ * 
+ * @example
+ * ```tsx
+ * // In a Server Component
+ * export default async function AboutPage() {
+ *   const hotel = await getHotelInfo();
+ *   return <AboutContent hotel={hotel} />;
+ * }
+ * ```
+ */
+export async function getHotelInfo() {
+  try {
+    logger.info('Fetching hotel info (server-side)');
+    const { getHotelInfo } = await import('@/services/hotel.service');
+    return await getHotelInfo();
+  } catch (error) {
+    logger.error('Failed to fetch hotel info', error);
+    // Return default data to prevent page crash
+    return {
+      id: 'default',
+      name: 'Prarthana Nelum Pokuna',
+      description: 'A serene and elegant venue',
+      address: null,
+      phone: null,
+      email: null,
+      map_link: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
   }
 }

@@ -5,11 +5,16 @@ import { FeaturesSection } from "@/components/sections/FeaturesSection";
 import { ServicesSection } from "@/components/sections/ServicesSection";
 import { CTASection } from "@/components/sections/CTASection";
 import { getFunctionTypes } from "@/lib/fetchers/server";
+import { getServerSideAuth } from "@/lib/auth-helpers";
+import { redirect } from "next/navigation";
 
 /**
  * Home Page - Server Component
  * 
- * This page fetches function types data server-side for optimal performance.
+ * Checks authentication status:
+ * - If authenticated (valid token) → Redirects to admin dashboard
+ * - If not authenticated or expired token → Shows public landing page
+ * 
  * Data is cached and revalidated every hour using Next.js ISR.
  */
 
@@ -17,7 +22,15 @@ import { getFunctionTypes } from "@/lib/fetchers/server";
 export const revalidate = 3600;
 
 export default async function HomePage() {
-  // Fetch function types server-side (direct DB access, no HTTP overhead)
+  // Check authentication status
+  const admin = await getServerSideAuth();
+  
+  // If user is authenticated with valid token, redirect to admin dashboard
+  if (admin) {
+    redirect('/admin/dashboard');
+  }
+  
+  // User is not authenticated or token is expired - show public landing page
   const functionTypes = await getFunctionTypes();
 
   return (

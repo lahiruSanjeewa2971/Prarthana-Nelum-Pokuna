@@ -29,10 +29,14 @@ export async function POST(request: NextRequest) {
     // Authenticate admin
     const result = await login(credentials);
 
-    // Create response with JWT in httpOnly cookie
-    const response = successResponse({
-      message: 'Login successful',
-      admin: result.admin,
+    // Create response with redirect to dashboard
+    const response = NextResponse.json({
+      success: true,
+      data: {
+        message: 'Login successful',
+        admin: result.admin,
+        redirectUrl: '/admin/dashboard',
+      },
     });
 
     // Set JWT token in httpOnly cookie

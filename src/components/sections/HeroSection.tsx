@@ -59,7 +59,7 @@ export function HeroSection() {
               size="lg"
               variant="outline"
               asChild
-              className="border-2 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 hover:border-primary-foreground/50 px-8 py-6 text-base"
+              className="border-2 border-primary-foreground/30 text-black hover:bg-primary-foreground/10 hover:border-primary-foreground/50 px-8 py-6 text-base"
             >
               <Link href="/gallery">View Gallery</Link>
             </Button>
