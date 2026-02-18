@@ -33,21 +33,33 @@ export function ThemeProvider({
   const [theme, setTheme] = useState<Theme>(defaultTheme);
   const [mounted, setMounted] = useState(false);
 
+  // Load theme from localStorage after mount
   useEffect(() => {
     setMounted(true);
-    const storedTheme = localStorage.getItem(storageKey) as Theme;
-    if (storedTheme) {
-      setTheme(storedTheme);
+    try {
+      const storedTheme = localStorage.getItem(storageKey) as Theme;
+      if (storedTheme && (storedTheme === "light" || storedTheme === "dark")) {
+        setTheme(storedTheme);
+      }
+    } catch (e) {
+      // In case localStorage is not available
+      console.error("Failed to load theme from localStorage:", e);
     }
   }, [storageKey]);
 
+  // Apply theme to document
   useEffect(() => {
-    if (!mounted) return;
-
     const root = window.document.documentElement;
     root.classList.remove("light", "dark");
     root.classList.add(theme);
-    localStorage.setItem(storageKey, theme);
+    
+    if (mounted) {
+      try {
+        localStorage.setItem(storageKey, theme);
+      } catch (e) {
+        console.error("Failed to save theme to localStorage:", e);
+      }
+    }
   }, [theme, storageKey, mounted]);
 
   const toggleTheme = () => {

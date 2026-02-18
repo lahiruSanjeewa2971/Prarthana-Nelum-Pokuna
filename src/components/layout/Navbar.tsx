@@ -2,13 +2,18 @@
 
 import { Moon, Sun, Menu, X } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 export function Navbar() {
   const { theme, toggleTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const navLinks = [
     { href: "/", label: "Home" },
@@ -69,11 +74,16 @@ export function Navbar() {
               onClick={toggleTheme}
               className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
               aria-label="Toggle theme"
+              suppressHydrationWarning
             >
-              {theme === "light" ? (
-                <Moon className="h-5 w-5" />
+              {mounted ? (
+                theme === "light" ? (
+                  <Moon className="h-5 w-5" />
+                ) : (
+                  <Sun className="h-5 w-5" />
+                )
               ) : (
-                <Sun className="h-5 w-5" />
+                <Moon className="h-5 w-5" />
               )}
             </button>
 
