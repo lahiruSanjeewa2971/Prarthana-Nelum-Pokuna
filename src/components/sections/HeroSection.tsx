@@ -2,11 +2,28 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { Button } from '@/components/ui/button';
+import { useDeviceDetection } from '@/hooks/useDeviceDetection';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
+
+// Dynamically import ParticleCanvas for code splitting and SSR safety
+const ParticleCanvas = dynamic(
+  () => import('@/components/three/ParticleCanvas').then(mod => ({ default: mod.ParticleCanvas })),
+  { 
+    ssr: false, // Don't render on server
+    loading: () => null // No loading state needed
+  }
+);
 
 export function HeroSection() {
+  // Device detection for adaptive particle rendering
+  const { shouldReduceMotion, isLowEnd } = useDeviceDetection();
+  const showParticles = !shouldReduceMotion && !isLowEnd;
+
   return (
     <section className="relative overflow-hidden bg-primary text-primary-foreground">
+      {/* Layer 0: Background Image */}
       <div
         className="absolute inset-0 opacity-20"
         style={{
@@ -14,9 +31,19 @@ export function HeroSection() {
             "url('https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1920&q=80')",
           backgroundSize: "cover",
           backgroundPosition: "center",
+          zIndex: 0,
         }}
       />
-      <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 lg:py-40">
+      
+      {/* Layer 1: Floating Lotus Petals (Three.js Canvas) */}
+      {showParticles && (
+        <ErrorBoundary>
+          <ParticleCanvas />
+        </ErrorBoundary>
+      )}
+      
+      {/* Layer 2: Content (Text & Buttons) */}
+      <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 lg:py-40" style={{ zIndex: 10 }}>
         <div className="max-w-4xl mx-auto flex flex-col items-center text-center">
           <motion.p
             initial={{ opacity: 0, y: 20 }}
