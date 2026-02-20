@@ -1,6 +1,6 @@
 # Admin Dashboard - Complete Implementation Plan
 
-> **📌 Last Updated**: February 19, 2026
+> **📌 Last Updated**: February 20, 2026
 > 
 > **✅ Pre-existing Components Found**: 
 > - `middleware.ts` - Route protection fully configured
@@ -35,18 +35,21 @@
 | **Route Protection** | ✅ Complete | ✅ Complete | 100% Done |
 | **Admin Layout** | N/A | ✅ Complete | 100% Done |
 | **Bookings Dashboard** | ✅ Complete | ✅ Complete | 100% Done |
-| **Function Types** | ✅ Complete | ⚠️ Table + Modal | 50% Done |
-| **Hotel Settings** | ⚠️ API needed | ⚠️ Form needed | 0% Done |
+| **Function Types** | ✅ Complete | ✅ Complete | 100% Done |
+| **Hotel Settings** | ✅ Complete | ✅ Complete | 100% Done |
 | **Services/Repos** | ✅ Complete | N/A | 100% Done |
+| **401 Error Handling** | ✅ Complete | ✅ Complete | 100% Done |
 
-**Overall Progress**: 🟩🟩🟩🟩🟩�⬜⬜⬜⬜ **~50% Complete**
+**Overall Progress**: 🟩🟩🟩🟩🟩🟩🟩🟩🟩⬜ **~90% Complete**
 
 **Next Priority Steps**:
 1. ✅ ~~Create `AuthContext.tsx` + `useAuth.ts` hook~~ **DONE**
 2. ✅ ~~Build admin login modal with form validation~~ **DONE**
-3. ⚠️ Create admin layout with sidebar (3 hours) **NEXT**
-4. ⚠️ Build dashboard with bookings table (3 hours)
-5. ⚠️ Build function types management page (2 hours)
+3. ✅ ~~Create admin layout with sidebar~~ **DONE**
+4. ✅ ~~Build dashboard with bookings table~~ **DONE**
+5. ✅ ~~Build function types management page~~ **DONE**
+6. ✅ ~~Build hotel settings management page~~ **DONE**
+7. ⚠️ UI polish and final testing **NEXT**
 
 ---
 
@@ -499,329 +502,175 @@ const { admin, isAuthenticated, isLoading, login, logout } = useAuth();
 
 ---
 
-### **Phase 3: Admin Layout & Sidebar** (3 hours)
+### **Phase 3: Admin Layout & Sidebar** ✅ COMPLETE
 
-#### Step 3.1: Admin Layout
+#### Step 3.1: Admin Layout ✅ COMPLETE
 **File**: `src/app/admin/layout.tsx`
 
-**Purpose**: Wrap all admin pages with sidebar + header
+**Status**: ✅ **Fully implemented!**
 
-**Structure**:
-```typescript
-export default function AdminLayout({ children }) {
-  return (
-    <div className="flex h-screen">
-      <Sidebar />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <AdminHeader />
-        <main className="flex-1 overflow-y-auto p-6">
-          {children}
-        </main>
-      </div>
-    </div>
-  );
-}
-```
+**Implementation**:
+- ✅ Wraps all admin pages with sidebar + header
+- ✅ Flex layout with sidebar and main content area
+- ✅ Mobile-responsive with hamburger menu
+- ✅ Integrated with AuthProvider
 
 ---
 
-#### Step 3.2: Sidebar Component
+#### Step 3.2: Sidebar Component ✅ COMPLETE
 **File**: `src/components/admin/Sidebar.tsx`
 
-**Purpose**: Left navigation sidebar
+**Status**: ✅ **Fully implemented!**
 
-**Navigation Items**:
-```typescript
-const navItems = [
-  {
-    label: 'Dashboard',
-    href: '/admin/dashboard',
-    icon: LayoutDashboard
-  },
-  {
-    label: 'Function Types',
-    href: '/admin/function-types',
-    icon: Calendar
-  },
-  {
-    label: 'Settings',
-    href: '/admin/settings',
-    icon: Settings
-  }
-];
-```
-
-**Features**:
-- Active route highlighting
-- Icon + label
-- Hover states
-- Collapse/expand (optional)
-- Logo at top
-- Logout button at bottom
-
-**Desktop Design**:
-```
-┌──────────────┐
-│ [Logo]       │
-│              │
-│ Dashboard ●  │ ← Active
-│ Functions    │
-│ Settings     │
-│              │
-│              │
-│              │
-│ [Logout]     │
-└──────────────┘
-```
+**Implementation Features**:
+- ✅ Left navigation sidebar with logo
+- ✅ Navigation items: Dashboard, Function Types, Settings
+- ✅ Active route highlighting with usePathname
+- ✅ Lucide React icons
+- ✅ Hover states and animations
+- ✅ Logout button at bottom
+- ✅ Desktop-only (hidden on mobile)
 
 ---
 
-#### Step 3.3: Mobile Sidebar (Drawer)
+#### Step 3.3: Mobile Sidebar (Drawer) ✅ COMPLETE
 **File**: `src/components/admin/MobileSidebar.tsx`
 
-**Purpose**: Drawer sidebar for mobile/tablet
+**Status**: ✅ **Fully implemented!**
 
-**Features**:
-- Hamburger menu button
-- Slide-in animation
-- Overlay backdrop
-- Same nav items as desktop
-- Auto-close on navigation
+**Implementation Features**:
+- ✅ Sheet component (shadcn/ui) for drawer
+- ✅ Hamburger menu button trigger
+- ✅ Slide-in animation from left
+- ✅ Same nav items as desktop sidebar
+- ✅ Auto-close on navigation
+- ✅ Mobile-only (hidden on desktop)
 
 ---
 
-#### Step 3.4: Admin Header
+#### Step 3.4: Admin Header ✅ COMPLETE
 **File**: `src/components/admin/AdminHeader.tsx`
 
-**Purpose**: Top header bar
+**Status**: ✅ **Fully implemented!**
 
-**Contents**:
-```
-┌────────────────────────────────────────┐
-│ [☰] Breadcrumbs       [Admin ▼] [🔔] │
-└────────────────────────────────────────┘
-```
-
-**Features**:
-- Hamburger menu (mobile only)
-- Breadcrumbs navigation
-- Admin dropdown menu (profile, logout)
-- Notifications icon (future)
+**Implementation Features**:
+- ✅ Top header bar
+- ✅ Mobile sidebar trigger button (mobile only)
+- ✅ Dynamic page title based on route
+- ✅ Admin dropdown menu with logout
+- ✅ User avatar/icon
+- ✅ Responsive design
 
 ---
 
-### **Phase 4: Dashboard - Bookings Management** (3 hours)
+### **Phase 4: Dashboard - Bookings Management** ✅ COMPLETE
 
-> **📌 Backend APIs**: ✅ **COMPLETE** - All booking APIs are implemented!
-> **🎨 Frontend**: ⚠️ **TO DO** - Need to build UI components
+> **📌 Status**: ✅ **FULLY COMPLETE** - All backend APIs and frontend UI implemented!
 
-**What's Already Done**:
-- ✅ `GET /api/admin/bookings` - List with filters (status, dateRange, email, functionTypeId) + pagination
-- ✅ `GET /api/admin/bookings/:id` - Get single booking details
-- ✅ `PATCH /api/admin/bookings/:id` - Update status (PENDING/ACCEPTED/REJECTED) + admin note
-- ✅ Full booking service layer implemented
-- ✅ Zod validation on all endpoints
-- ✅ Protected with `requireAuth()` middleware
+**What's Done**:
+- ✅ `GET /api/admin/bookings` - List with filters + pagination
+- ✅ `GET /api/admin/bookings/:id` - Get single booking
+- ✅ `PATCH /api/admin/bookings/:id` - Update status + admin note
+- ✅ `DELETE /api/admin/bookings/:id` - Delete booking
+- ✅ Full booking service layer
+- ✅ React Query setup with QueryProvider
+- ✅ useBookings hook with all 4 functions
+- ✅ StatsCards component
+- ✅ BookingFilters component (tabs on desktop, dropdown on mobile)
+- ✅ BookingTable component
+- ✅ BookingDialog component (view/edit)
+- ✅ BookingDeleteDialog component
+- ✅ Dashboard page integration
+- ✅ 401 error handling with cookie clearing
 
-**What's Left to Build** (3 hours):
-- Component: StatsCards.tsx
-- Component: BookingFilters.tsx  
-- Component: BookingTable.tsx
-- Component: BookingDialog.tsx
-- Component: BookingDeleteDialog.tsx
-- Hook: useBookings.ts (React Query)
-- Page: /admin/dashboard/page.tsx
-
-#### Step 4.1: Dashboard Page Layout
+#### Step 4.1: Dashboard Page Layout ✅ COMPLETE
 **File**: `src/app/admin/dashboard/page.tsx`
 
-**Purpose**: Main admin dashboard
+**Status**: ✅ **Fully implemented!**
 
-**Structure**:
-```
-┌───────────────────────────────────────┐
-│ Dashboard                             │
-├───────────────────────────────────────┤
-│ [Stats Cards: Total | Pending | etc] │
-├───────────────────────────────────────┤
-│ [Filters: All | Pending | Accepted...│
-├───────────────────────────────────────┤
-│ [Bookings Table]                      │
-│ ┌─────┬──────┬──────┬────────────┐   │
-│ │ ID  │ Name │ Date │ Actions    │   │
-│ ├─────┼──────┼──────┼────────────┤   │
-│ │ ... │ ... │ ...  │ [Edit][Del]│   │
-│ └─────┴──────┴──────┴────────────┘   │
-└───────────────────────────────────────┘
-```
+**Implementation Features**:
+- ✅ Client component with React Query
+- ✅ Status filter state management
+- ✅ Pagination state (page/limit)
+- ✅ Integrates StatsCards, BookingFilters, BookingTable
+- ✅ Error handling and loading states
 
 ---
 
-#### Step 4.2: Statistics Cards
+#### Step 4.2: Statistics Cards ✅ COMPLETE
 **File**: `src/components/admin/StatsCards.tsx`
 
-**Purpose**: Display key metrics
+**Status**: ✅ **Fully implemented!**
 
-**Metrics**:
-1. **Total Bookings**: Count of all bookings
-2. **Pending**: Count of PENDING bookings
-3. **Accepted**: Count of ACCEPTED bookings
-4. **Rejected**: Count of REJECTED bookings
-
-**Card Design**:
-```
-┌──────────────────┐
-│ 🎫 Total         │
-│                  │
-│ 247              │
-│                  │
-│ +12 from last    │
-│ month            │
-└──────────────────┘
-```
-
-**Data Fetching**:
-```typescript
-const stats = await getBookingStats();
-
-interface BookingStats {
-  total: number;
-  pending: number;
-  accepted: number;
-  rejected: number;
-}
-```
+**Implementation Features**:
+- ✅ 4 stat cards: Total, Pending, Accepted, Rejected
+- ✅ Uses useBookingStats() hook
+- ✅ Loading skeleton states
+- ✅ Color-coded icons (Calendar, Clock, CheckCircle, XCircle)
+- ✅ Responsive grid layout
 
 ---
 
-#### Step 4.3: Booking Filters
+#### Step 4.3: Booking Filters ✅ COMPLETE
 **File**: `src/components/admin/BookingFilters.tsx`
 
-**Purpose**: Filter bookings by status
+**Status**: ✅ **Fully implemented!**
 
-**Filter Options**:
-```typescript
-const filters = [
-  { label: 'All', value: 'all', count: 247 },
-  { label: 'Pending', value: 'pending', count: 15 },
-  { label: 'Accepted', value: 'accepted', count: 200 },
-  { label: 'Rejected', value: 'rejected', count: 32 }
-];
-```
-
-**UI Design**:
-```
-┌─────┬─────────┬──────────┬──────────┐
-│ All │ Pending │ Accepted │ Rejected │
-│ 247 │   15    │   200    │    32    │
-└─────┴─────────┴──────────┴──────────┘
-    ▲ Active
-```
-
-**Behavior**:
-- Update URL search params: `?status=pending`
-- Trigger table refetch
-- Persist filter on page refresh
+**Implementation Features**:
+- ✅ Tabs component for desktop (All, Pending, Accepted, Rejected)
+- ✅ Dropdown menu for mobile
+- ✅ Shows booking counts for each status
+- ✅ Updates parent state via callback
+- ✅ Responsive design
 
 ---
 
-#### Step 4.4: Bookings Table
+#### Step 4.4: Bookings Table ✅ COMPLETE
 **File**: `src/components/admin/BookingTable.tsx`
 
-**Purpose**: Display bookings in table format
+**Status**: ✅ **Fully implemented!**
 
-**Columns**:
-1. ID (short format)
-2. Customer Name
-3. Email
-4. Phone
-5. Function Type
-6. Event Date
-7. Time (Start - End)
-8. Status Badge
-9. Actions (View, Edit, Delete)
-
-**Table Design**:
-```
-┌────────┬──────────┬───────────┬────────┬────────┬────────────┐
-│ ID     │ Customer │ Email     │ Func   │ Date   │ Actions    │
-├────────┼──────────┼───────────┼────────┼────────┼────────────┤
-│ #1234  │ John Doe │ john@...  │Wedding │ Feb 25 │ [👁][✏][🗑]│
-│ PENDING│          │           │        │        │            │
-├────────┼──────────┼───────────┼────────┼────────┼────────────┤
-│ #1235  │ Jane Sm  │ jane@...  │Birthday│ Mar 10 │ [👁][✏][🗑]│
-│ACCEPTED│          │           │        │        │            │
-└────────┴──────────┴───────────┴────────┴────────┴────────────┘
-```
-
-**Features**:
-- Sortable columns
-- Pagination (10, 25, 50 per page)
-- Status badge with color coding
-  - Pending: Yellow
-  - Accepted: Green
-  - Rejected: Red
-- Action buttons (view, edit, delete)
-- Responsive (card view on mobile)
+**Implementation Features**:
+- ✅ shadcn/ui Table component
+- ✅ 8 columns: Customer, Email, Phone, Function Type, Event Date, Time, Status, Actions
+- ✅ Status badges with color coding (yellow/green/red)
+- ✅ Action buttons: View, Edit, Delete
+- ✅ Integrates BookingDialog and BookingDeleteDialog
+- ✅ Loading states and empty state
+- ✅ Responsive design
 
 ---
 
-#### Step 4.5: Booking Detail Dialog
+#### Step 4.5: Booking Detail Dialog ✅ COMPLETE
 **File**: `src/components/admin/BookingDialog.tsx`
 
-**Purpose**: View/Edit booking details in modal
+**Status**: ✅ **Fully implemented!**
 
-**Modes**:
-1. **View Mode**: Read-only display
-2. **Edit Mode**: Editable form
-3. **Create Mode**: Empty form
-
-**Form Fields**:
-```typescript
-- Customer Name (text)
-- Customer Email (email)
-- Customer Phone (tel)
-- Function Type (select)
-- Event Date (date picker)
-- Start Time (time picker)
-- End Time (time picker)
-- Additional Notes (textarea)
-- Status (select: Pending, Accepted, Rejected)
-- Admin Note (textarea)
-```
-
-**Actions**:
-- Save Changes
-- Cancel
-- Quick Actions:
-  - Accept Booking (status → ACCEPTED)
-  - Reject Booking (status → REJECTED)
+**Implementation Features**:
+- ✅ View and Edit modes
+- ✅ Customer information section
+- ✅ Event details section
+- ✅ Status management with dropdown (Pending/Accepted/Rejected)
+- ✅ Admin note textarea (1000 char limit)
+- ✅ Quick action buttons: Accept, Reject
+- ✅ Metadata display (created/updated timestamps)
+- ✅ Edit mode toggle
+- ✅ Uses useUpdateBookingStatus mutation
 
 ---
 
-#### Step 4.6: Delete Confirmation Dialog
+#### Step 4.6: Delete Confirmation Dialog ✅ COMPLETE
 **File**: `src/components/admin/BookingDeleteDialog.tsx`
 
-**Purpose**: Confirm booking deletion
+**Status**: ✅ **Fully implemented!**
 
-**Design**:
-```
-┌─────────────────────────────┐
-│ ⚠️  Delete Booking          │
-│                             │
-│ Are you sure you want to    │
-│ delete this booking?        │
-│                             │
-│ Customer: John Doe          │
-│ Event: Wedding              │
-│ Date: Feb 25, 2026          │
-│                             │
-│ This action cannot be       │
-│ undone.                     │
-│                             │
-│ [Cancel]  [Delete Booking]  │
-└─────────────────────────────┘
-```
+**Implementation Features**:
+- ✅ AlertDialog component (shadcn/ui)
+- ✅ Shows booking summary before deletion
+- ✅ Warning message about permanent deletion
+- ✅ Delete mutation with cache invalidation
+- ✅ Toast notifications on success/error
+- ✅ Loading state during deletion
 
 ---
 
@@ -881,148 +730,99 @@ Implemented Response:
 }
 ```
 
+**✅ DELETE /api/admin/bookings/:id**
+- Protected with requireAuth()
+- Deletes booking by ID
+- Returns success response
+- Service layer: `deleteBooking(id)` function
+
 **Note**: Full booking update (customerName, email, etc.) not implemented yet. Currently only status + adminNote updates are supported. Add full update if needed later.
 
 ---
 
-#### Step 4.8: useBookings Hook
+#### Step 4.8: useBookings Hook ✅ COMPLETE
 **File**: `src/hooks/useBookings.ts`
 
-**Purpose**: React Query hook for bookings data
+**Status**: ✅ **Fully implemented!**
 
-**Functions**:
-```typescript
-export function useBookings(filters: BookingFilters) {
-  // Fetch bookings with filters
-  // Return: { data, isLoading, error, refetch }
-}
+**Implementation Features**:
+- ✅ `useBookings(filters)` - Fetch bookings with pagination
+- ✅ `useBooking(id)` - Fetch single booking
+- ✅ `useUpdateBookingStatus()` - Mutation for status updates
+- ✅ `useBookingStats()` - Fetch statistics with parallel API calls
+- ✅ React Query configuration (staleTime: 60s, refetchOnWindowFocus: true)
+- ✅ Error handling with status codes for 401 detection
+- ✅ Cache invalidation on mutations
+- ✅ Toast notifications (success/error)
+- ✅ Optimized stats fetching (4 parallel requests with limit=1, uses pagination.total)
 
-export function useBooking(id: string) {
-  // Fetch single booking
-}
-
-export function useCreateBooking() {
-  // Mutation: create booking
-}
-
-export function useUpdateBooking() {
-  // Mutation: update booking
-}
-
-export function useDeleteBooking() {
-  // Mutation: delete booking
-}
-
-export function useBookingStats() {
-  // Fetch statistics
-}
-```
-
-**React Query Configuration**:
-```typescript
-- Cache time: 5 minutes
-- Stale time: 1 minute
-- Refetch on window focus: true
-- Auto-retry on error: 3 times
-```
+**React Query Provider**: `src/providers/QueryProvider.tsx` ✅ Complete
+- ✅ Global QueryClient setup
+- ✅ 401 error handling (clears cookie, redirects to landing)
+- ✅ Custom retry logic (no retry on 401)
 
 ---
 
-### **Phase 5: Function Types Management** (2 hours)
+### **Phase 5: Function Types Management** ✅ COMPLETE
 
-> **📌 Backend APIs**: ✅ **COMPLETE** - All function type APIs are implemented!
-> **🎨 Frontend**: ⚠️ **TO DO** - Need to build UI components
+> **📌 Status**: ✅ **FULLY COMPLETE** - All backend APIs and frontend UI implemented!
 
-**What's Already Done**:
-- ✅ `GET /api/admin/function-types` - List all (includes inactive)
+**What's Done**:
+- ✅ `GET /api/admin/function-types` - List all function types
 - ✅ `POST /api/admin/function-types` - Create new function type
 - ✅ `GET /api/admin/function-types/:id` - Get single function type
-- ✅ `PATCH /api/admin/function-types/:id` - Update function type (name, slug, isActive)
-- ✅ `DELETE /api/admin/function-types/:id` - Delete (checks for active bookings first)
-- ✅ `PATCH /api/admin/function-types/:id/status` - Toggle active/inactive
-- ✅ Full function type service layer
-- ✅ Zod validation on all endpoints
-- ✅ Protected with `requireAuth()` middleware
+- ✅ `PATCH /api/admin/function-types/:id` - Update function type
+- ✅ `DELETE /api/admin/function-types/:id` - Delete (with pending/accepted booking check)
+- ✅ `PATCH /api/admin/function-types/:id/status` - Toggle active status
+- ✅ useFunctionTypes hook with 5 functions
+- ✅ FunctionTypeTable component
+- ✅ FunctionTypeDialog component (create/edit)
+- ✅ Function Types page
+- ✅ Delete validation: Checks for pending/accepted bookings only
 
-**What's Left to Build** (2 hours):
-- Component: FunctionTypeTable.tsx
-- Component: FunctionTypeDialog.tsx (create/edit modal)
-- Hook: useFunctionTypes.ts (React Query)
-- Page: /admin/function-types/page.tsx
-
-#### Step 5.1: Function Types Page
+#### Step 5.1: Function Types Page ✅ COMPLETE
 **File**: `src/app/admin/function-types/page.tsx`
 
-**Purpose**: CRUD interface for function types
+**Status**: ✅ **Fully implemented!**
 
-**Layout**:
-```
-┌───────────────────────────────────────┐
-│ Function Types       [+ New Function] │
-├───────────────────────────────────────┤
-│ [Function Types Table]                │
-│ ┌──────┬────────┬───────┬──────────┐ │
-│ │ Name │ Price  │ Active│ Actions  │ │
-│ ├──────┼────────┼───────┼──────────┤ │
-│ │Wedding│$5,000 │ ✓     │[Edit][Del│ │
-│ │Birthday│$2,000│ ✓     │[Edit][Del│ │
-│ └──────┴────────┴───────┴──────────┘ │
-└───────────────────────────────────────┘
-```
+**Implementation Features**:
+- ✅ Client component with React Query
+- ✅ Integrates FunctionTypeTable component
+- ✅ Error handling and loading states
 
 ---
 
-#### Step 5.2: Function Types Table
+#### Step 5.2: Function Types Table ✅ COMPLETE
 **File**: `src/components/admin/FunctionTypeTable.tsx`
 
-**Purpose**: Display function types
+**Status**: ✅ **Fully implemented!**
 
-**Columns**:
-1. Name
-2. Slug (auto-generated)
-3. Price (formatted as currency)
-4. Description (truncated)
-5. Active Status (toggle switch)
-6. Actions (Edit, Delete)
-
-**Features**:
-- Inline active/inactive toggle
-- Sort by name or price
-- Quick edit modal
-- Delete with confirmation
+**Implementation Features**:
+- ✅ shadcn/ui Table component
+- ✅ Columns: Name, Slug, Price (formatted as LKR), Status, Actions
+- ✅ Active/Inactive toggle with Switch component
+- ✅ Edit button opens FunctionTypeDialog
+- ✅ Delete button with confirmation AlertDialog
+- ✅ Empty state with create button
+- ✅ Loading skeleton states
+- ✅ Price formatting with Intl.NumberFormat
 
 ---
 
-#### Step 5.3: Function Type Dialog
+#### Step 5.3: Function Type Dialog ✅ COMPLETE
 **File**: `src/components/admin/FunctionTypeDialog.tsx`
 
-**Purpose**: Create/Edit function type
+**Status**: ✅ **Fully implemented!**
 
-**Form Fields**:
-```typescript
-- Name (text, required)
-- Slug (text, auto-generated from name)
-- Price (number, required, min: 0)
-- Description (textarea, optional)
-- Active Status (toggle, default: true)
-```
-
-**Validation**:
-```typescript
-const schema = z.object({
-  name: z.string().min(3, 'Name must be at least 3 characters'),
-  slug: z.string().optional(),
-  price: z.number().min(0, 'Price must be positive'),
-  description: z.string().optional(),
-  isActive: z.boolean()
-});
-```
-
-**Slug Auto-generation**:
-```typescript
-// "Wedding Package" → "wedding-package"
-slug = name.toLowerCase().replace(/\s+/g, '-');
-```
+**Implementation Features**:
+- ✅ Create and Edit modes
+- ✅ Form fields: Name, Slug, Price, Active Status
+- ✅ Auto-generate slug from name
+- ✅ Form validation (name min 3 chars, price positive number)
+- ✅ Switch component for active status
+- ✅ Loading states during submission
+- ✅ Error display for each field
+- ✅ Success toast on save
 
 ---
 
@@ -1086,8 +886,10 @@ Implemented Body:
 
 **✅ DELETE /api/admin/function-types/:id**
 - Protected with requireAuth()
-- Checks for active bookings before deletion
-- Returns 400 error if bookings exist: "Cannot delete function type with active bookings"
+- **Updated**: Checks for pending or accepted bookings only (not rejected)
+- Returns 409 Conflict error if active bookings exist
+- Error message: "Cannot delete function type. It has X active booking(s) (pending or accepted)."
+- Allows deletion if only rejected bookings exist
 
 **File**: `src/app/api/admin/function-types/[id]/status/route.ts`
 
@@ -1133,10 +935,30 @@ export function useDeleteFunctionType() {
 
 ---
 
-### **Phase 6: Hotel Settings Management** (3 hours)
+### **Phase 6: Hotel Settings Management** ✅ COMPLETE
 
-#### Step 6.1: Settings Page
+> **📌 Status**: ✅ **FULLY COMPLETE** - All backend APIs and frontend UI implemented!
+
+**What's Done**:
+- ✅ `GET /api/hotel` - Fetch hotel information (public)
+- ✅ `PUT /api/hotel` - Update hotel information (admin only)
+- ✅ Hotel service layer with validation
+- ✅ Hotel repository with upsert logic
+- ✅ useHotel hook with fetch and update mutations
+- ✅ SettingsForm component with all fields
+- ✅ Settings page with error handling
+
+#### Step 6.1: Settings Page ✅ COMPLETE
 **File**: `src/app/admin/settings/page.tsx`
+
+**Status**: ✅ **Fully implemented!**
+
+**Implementation Features**:
+- ✅ Client component with React Query
+- ✅ Integrates SettingsForm component
+- ✅ Error handling with user-friendly message
+- ✅ Loading states
+- ✅ Page header with title and description
 
 **Purpose**: Manage hotel information
 
@@ -1166,8 +988,21 @@ export function useDeleteFunctionType() {
 
 ---
 
-#### Step 6.2: Settings Form
+#### Step 6.2: Settings Form ✅ COMPLETE
 **File**: `src/components/admin/SettingsForm.tsx`
+
+**Status**: ✅ **Fully implemented!**
+
+**Implementation Features**:
+- ✅ React Hook Form with Zod validation
+- ✅ All 6 form fields with proper validation
+- ✅ Error display for each field
+- ✅ Loading skeleton during data fetch
+- ✅ Disabled state during submission
+- ✅ Discard changes functionality
+- ✅ isDirty detection to enable/disable save button
+- ✅ Card layout with proper spacing
+- ✅ Responsive design
 
 **Purpose**: Edit hotel information
 
@@ -1203,10 +1038,12 @@ const schema = z.object({
 
 ---
 
-#### Step 6.3: Hotel API
-**File**: `src/app/api/hotel/route.ts` (NEW)
+#### Step 6.3: Hotel API ✅ COMPLETE
+**File**: `src/app/api/hotel/route.ts`
 
-**GET /api/hotel**
+**Status**: ✅ **All hotel APIs are implemented!**
+
+**✅ GET /api/hotel** (Public)
 ```typescript
 Response:
 {
@@ -1216,7 +1053,7 @@ Response:
 Note: There should only be ONE hotel record
 ```
 
-**PUT /api/hotel** (Create or Update)
+**✅ PUT /api/hotel** (Admin only - Create or Update)
 ```typescript
 Body: {
   name: string,
@@ -1246,8 +1083,19 @@ const hotel = await prisma.hotel.upsert({
 
 ---
 
-#### Step 6.4: useHotel Hook
+#### Step 6.4: useHotel Hook ✅ COMPLETE
 **File**: `src/hooks/useHotel.ts`
+
+**Status**: ✅ **Fully implemented!**
+
+**Implementation Features**:
+- ✅ `useHotel()` - Fetch hotel information
+- ✅ `useUpdateHotel()` - Mutation for updating hotel
+- ✅ Error handling with status codes for 401 detection
+- ✅ Cache invalidation on successful update
+- ✅ Toast notifications (success/error)
+- ✅ Stale time: 5 minutes
+- ✅ No refetch on window focus
 
 **Purpose**: React Query hook for hotel settings
 
@@ -1779,27 +1627,28 @@ Testing:
 | 0 | **Pre-existing Components** ✅ | **-12h saved** | **0h** | ✅ Done |
 | 1 | Authentication Infrastructure | 0 hours | 0h | ✅ Complete |
 | 2 | Route Protection & Login Modal | 0 hours | 0h | ✅ Complete |
-| 3 | Admin Layout & Sidebar | 3 hours | 3h | ⚠️ TODO |
-| 4 | Dashboard - Bookings Management | 3 hours | 6h | ✅ APIs Done, UI TODO |
-| 5 | Function Types Management | 2 hours | 8h | ✅ APIs Done, UI TODO |
-| 6 | Hotel Settings Management | 3 hours | 11h | ⚠️ TODO |
-| 7 | UI Components & Styling | 3 hours | 14h | ⚠️ TODO |
-| 8 | Service & Repository Updates | 0 hours | 14h | ✅ Done |
-| 9 | Testing & QA | 4 hours | 18h | ⚠️ TODO |
-| 10 | Security & Performance | 2 hours | 20h | ⚠️ TODO |
-| 11 | Error Handling & Feedback | 2 hours | 22h | ⚠️ TODO |
-| 12 | Documentation & Deployment | 2 hours | 24h | ⚠️ TODO |
+| 3 | Admin Layout & Sidebar | 0 hours | 0h | ✅ Complete |
+| 4 | Dashboard - Bookings Management | 0 hours | 0h | ✅ Complete |
+| 5 | Function Types Management | 2 hours | 2h | ⚠️ UI TODO |
+| 6 | Hotel Settings Management | 3 hours | 5h | ⚠️ TODO |
+| 7 | UI Components & Styling | 1 hour | 6h | ⚠️ TODO |
+| 8 | Service & Repository Updates | 0 hours | 6h | ✅ Done |
+| 9 | Testing & QA | 4 hours | 10h | ⚠️ TODO |
+| 10 | Security & Performance | 1 hour | 11h | ⚠️ TODO |
+| 11 | Error Handling & Feedback | 0 hours | 11h | ✅ Done |
+| 12 | Documentation & Deployment | 2 hours | 13h | ⚠️ TODO |
 
-**Total Estimated Time**: 23-24 hours (saved 14-15 hours due to existing APIs & infrastructure)
+**Total Estimated Time Remaining**: ~13 hours (saved 20+ hours due to existing infrastructure & completed phases)
 
 **Breakdown**:
-- ✅ Backend Complete: Authentication APIs, Auth Context, Bookings API, Function Types API, Login Modal
-- ⚠️ Frontend Needed: Admin layout, Dashboard UI, Settings
-- ⚠️ Polish Needed: Testing, Security hardening, Documentation
+- ✅ Backend Complete: All APIs implemented and working
+- ✅ Core Admin UI Complete: Layout, Dashboard, Bookings fully functional
+- ✅ Auth & Error Handling: Complete with 401 handling
+- ⚠️ Frontend Needed: Function Types UI, Hotel Settings
+- ⚠️ Polish Needed: Testing, Documentation
 
-**Core Features Remaining** (Phases 3-6): ~9-10 hours
-**Polish & Quality** (Phases 7-9): ~9 hours
-**Optimization & Docs** (Phases 10-12): ~6 hours
+**Phases 1-4 Complete**: Authentication, Layout, Dashboard all working
+**Remaining Work** (Phases 5-7, 9-10, 12): ~13 hours
 
 ---
 

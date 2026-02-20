@@ -90,7 +90,7 @@ export async function findBookings(
       functionType: true,
     },
     orderBy: {
-      eventDate: 'asc',
+      createdAt: 'desc',
     },
     skip,
     take,

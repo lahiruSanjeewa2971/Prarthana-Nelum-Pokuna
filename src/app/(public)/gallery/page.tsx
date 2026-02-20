@@ -45,7 +45,7 @@ export default function GalleryPage() {
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <section className="bg-primary text-primary-foreground py-16">
-        <div className="container text-center">
+        <div className="container mx-auto px-4 text-center">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -67,7 +67,7 @@ export default function GalleryPage() {
 
       {/* Gallery Grid Section */}
       <section className="py-12 md:py-20">
-        <div className="container px-4 sm:px-6 lg:px-8">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 auto-rows-[200px] md:auto-rows-[250px]">
             {galleryImages.map((image, index) => {
               const layout = gridLayouts[index % gridLayouts.length];

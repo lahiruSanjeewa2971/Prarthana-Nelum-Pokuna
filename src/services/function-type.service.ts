@@ -194,7 +194,7 @@ export async function changeFunctionTypeStatus(
 }
 
 /**
- * Delete function type (if no bookings)
+ * Delete function type (if no pending/accepted bookings)
  */
 export async function deleteFunctionType(id: string): Promise<void> {
   logger.info('Deleting function type', { functionTypeId: id });
@@ -205,12 +205,17 @@ export async function deleteFunctionType(id: string): Promise<void> {
     throw new NotFoundError(`Function type with ID ${id} not found`);
   }
 
-  // Check for any bookings
+  // Check for pending or accepted bookings
   const bookingCounts = await functionTypeRepository.getBookingCountsByStatus(id);
-  if (bookingCounts.total > 0) {
+  const activeBookings = bookingCounts.pending + bookingCounts.accepted;
+  
+  if (activeBookings > 0) {
     throw new ConflictError(
-      `Cannot delete function type. It has ${bookingCounts.total} booking(s) linked to it.`,
-      { bookingCounts }
+      `Cannot delete function type. It has ${activeBookings} active booking(s) (pending or accepted).`,
+      { 
+        pending: bookingCounts.pending,
+        accepted: bookingCounts.accepted,
+      }
     );
   }
 

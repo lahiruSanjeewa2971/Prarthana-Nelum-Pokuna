@@ -12,7 +12,7 @@ export default async function BookingPage() {
     <div className="min-h-screen">
       {/* Hero Section */}
       <section className="bg-primary text-primary-foreground py-16">
-        <div className="container text-center">
+        <div className="container mx-auto px-4 text-center">
           <h1 className="font-display text-4xl md:text-5xl font-bold mb-4">
             Book Your Event
           </h1>

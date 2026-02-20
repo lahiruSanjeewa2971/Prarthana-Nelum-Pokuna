@@ -118,9 +118,8 @@ export function BookingForm({ functionTypes }: BookingFormProps) {
         // Handle different error formats
         const errorMessage = 
           typeof errorData === 'string' ? errorData :
-          errorData.error || 
+          errorData.error?.message || 
           errorData.message || 
-          JSON.stringify(errorData) || 
           'Failed to submit booking';
         
         throw new Error(errorMessage);
@@ -366,6 +365,14 @@ export function BookingForm({ functionTypes }: BookingFormProps) {
                   </p>
                 )}
               </div>
+            </div>
+
+            {/* Working Hours Notice */}
+            <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900 rounded-lg">
+              <p className="text-sm text-blue-700 dark:text-blue-300 flex items-center gap-2">
+                <Clock className="h-4 w-4 flex-shrink-0" />
+                <span><strong>Working Hours:</strong> 08:00 AM - 10:00 PM (8:00 - 22:00)</span>
+              </p>
             </div>
           </div>
 
