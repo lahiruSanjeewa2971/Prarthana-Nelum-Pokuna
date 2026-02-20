@@ -65,8 +65,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             error: null,
           });
         }
+      } else if (response.status === 401) {
+        // 401 Unauthorized - clear cookie and state
+        document.cookie = 'auth-token=; path=/; max-age=0; SameSite=Strict';
+        setState({
+          admin: null,
+          isAuthenticated: false,
+          isLoading: false,
+          error: null,
+        });
       } else {
-        // Unauthorized or error
+        // Other errors
         setState({
           admin: null,
           isAuthenticated: false,
@@ -120,8 +129,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           // Redirect to admin dashboard
           router.push(redirectUrl);
         } else {
-          // Login failed
-          const errorMessage = data.error || 'Invalid credentials';
+          // Login failed - extract message from error object
+          const errorMessage = 
+            typeof data.error === 'string' 
+              ? data.error 
+              : data.error?.message || 'Invalid credentials';
+          
           setState({
             admin: null,
             isAuthenticated: false,

@@ -36,6 +36,7 @@ async function listFunctionTypes(request: AuthenticatedRequest) {
  */
 const createFunctionTypeSchema = z.object({
   name: z.string().min(1, 'Name is required').max(100, 'Name must be less than 100 characters'),
+  price: z.number().min(0, 'Price must be positive'),
   slug: z.string().max(100).optional(),
   isActive: z.boolean().optional(),
 });
@@ -54,15 +55,17 @@ async function createFunctionType(request: AuthenticatedRequest) {
       );
     }
 
-    const { name, slug, isActive } = validation.data;
+    const { name, price, slug, isActive } = validation.data;
 
     logger.info('Admin creating function type', {
       adminId: request.admin?.adminId,
       name,
+      price,
     });
 
     const functionType = await functionTypeService.createFunctionType({
       name,
+      price,
       slug,
       isActive,
     });

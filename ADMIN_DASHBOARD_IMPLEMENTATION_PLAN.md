@@ -33,8 +33,8 @@
 |-----------|-------------|-------------|--------|
 | **Authentication** | ✅ Complete | ✅ Complete | 100% Done |
 | **Route Protection** | ✅ Complete | ✅ Complete | 100% Done |
-| **Admin Layout** | N/A | ⚠️ Sidebar + Header | 0% Done |
-| **Bookings Dashboard** | ✅ Complete | ⚠️ Table + Filters | 50% Done |
+| **Admin Layout** | N/A | ✅ Complete | 100% Done |
+| **Bookings Dashboard** | ✅ Complete | ✅ Complete | 100% Done |
 | **Function Types** | ✅ Complete | ⚠️ Table + Modal | 50% Done |
 | **Hotel Settings** | ⚠️ API needed | ⚠️ Form needed | 0% Done |
 | **Services/Repos** | ✅ Complete | N/A | 100% Done |

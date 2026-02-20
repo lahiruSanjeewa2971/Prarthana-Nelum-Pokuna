@@ -7,7 +7,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getHotelInfo } from '@/services/hotel.service';
 import { handleApiError } from '@/lib/error-handler';
-import { buildSuccessResponse } from '@/lib/response-builder';
+import { successResponse } from '@/lib/response-builder';
 
 /**
  * GET /api/hotel
@@ -17,10 +17,8 @@ export async function GET(request: NextRequest) {
   try {
     const hotel = await getHotelInfo();
     
-    return NextResponse.json(
-      buildSuccessResponse(hotel, 'Hotel information retrieved successfully')
-    );
+    return successResponse({ hotel });
   } catch (error) {
-    return handleApiError(error, 'Failed to retrieve hotel information');
+    return handleApiError(error);
   }
 }

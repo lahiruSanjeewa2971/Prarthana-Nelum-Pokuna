@@ -187,3 +187,22 @@ export async function updateBookingStatus(
 
   return updatedBooking;
 }
+
+/**
+ * Delete booking (admin only)
+ */
+export async function deleteBooking(id: string): Promise<void> {
+  logger.info("Deleting booking", { bookingId: id });
+
+  // Get existing booking
+  const existingBooking = await bookingRepository.findBookingById(id);
+
+  if (!existingBooking) {
+    throw new NotFoundError(`Booking with ID ${id} not found`);
+  }
+
+  // Delete booking
+  await bookingRepository.deleteBooking(id);
+
+  logger.info("Booking deleted", { bookingId: id });
+}

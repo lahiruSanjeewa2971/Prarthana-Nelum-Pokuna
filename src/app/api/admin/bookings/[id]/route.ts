@@ -90,5 +90,33 @@ async function updateBooking(
   }
 }
 
+/**
+ * DELETE /api/admin/bookings/[id]
+ * Delete booking (Admin only)
+ */
+async function deleteBooking(
+  request: AuthenticatedRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id: bookingId } = await params;
+
+    logger.info('Admin deleting booking', {
+      adminId: request.admin?.adminId,
+      bookingId,
+    });
+
+    await bookingService.deleteBooking(bookingId);
+
+    return successResponse({
+      message: 'Booking deleted successfully',
+    });
+  } catch (error) {
+    logger.error('Error deleting booking', error);
+    return handleApiError(error);
+  }
+}
+
 export const GET = requireAuth(getBooking);
 export const PATCH = requireAuth(updateBooking);
+export const DELETE = requireAuth(deleteBooking);
