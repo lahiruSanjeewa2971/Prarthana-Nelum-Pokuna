@@ -5,10 +5,12 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { LoginModal } from "@/components/auth/LoginModal";
 
 export function Navbar() {
   const { theme, toggleTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -55,12 +57,12 @@ export function Navbar() {
           <div className="flex items-center space-x-3">
             {/* Desktop Auth Buttons */}
             <div className="hidden md:flex md:items-center md:space-x-3">
-              <Link
-                href="/login"
+              <button
+                onClick={() => setLoginModalOpen(true)}
                 className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
               >
                 Login
-              </Link>
+              </button>
               <Link
                 href="/booking"
                 className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
@@ -122,13 +124,15 @@ export function Navbar() {
             </Link>
           ))}
           <div className="border-t pt-4 space-y-2">
-            <Link
-              href="/login"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block rounded-md px-3 py-2 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                setLoginModalOpen(true);
+              }}
+              className="block w-full text-left rounded-md px-3 py-2 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
             >
               Login
-            </Link>
+            </button>
             <Link
               href="/booking"
               onClick={() => setMobileMenuOpen(false)}
@@ -139,6 +143,12 @@ export function Navbar() {
           </div>
         </div>
       </div>
+
+      {/* Login Modal */}
+      <LoginModal 
+        open={loginModalOpen} 
+        onClose={() => setLoginModalOpen(false)} 
+      />
     </nav>
   );
 }
